@@ -21,6 +21,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Port;
 import javax.sound.sampled.SourceDataLine;
 import javax.swing.JLabel;
 import javax.swing.SwingWorker;
@@ -31,6 +32,7 @@ public class Selenium {
 	public static boolean running = false;
 	public static Integer numOfSpan = 0;
 	private static LocalTime time;
+	private final static String port = "localhost:9222";
 	private static String infoXpath = "/html/body/app-root/app-appointment-layout/html/body/div/div/div/div[2]/app-appointment-slots/div/form/div[2]/div/div/form/div/h2";
 	private static String buttonXpath = "/html/body/app-root/app-appointment-layout/html/body/div/div/div/div[2]/app-appointment-slots/div/form/div[2]/div/div/div/p-calendar/span/div/div/div[2]/table/tbody/tr[%d]/td[%d]/a";
 	private static String nextMonthXpath = "/html/body/app-root/app-appointment-layout/html/body/div/div/div/div[2]/app-appointment-slots/div/form/div[2]/div/div/div/p-calendar/span/div/div/div[1]/a[2]";
@@ -70,13 +72,14 @@ public class Selenium {
 		service = new ChromeDriverService.Builder().withLogOutput(System.out).build();
 		System.setProperty("webdriver.chrome.driver", "C:\\Selenium\\chromedriver.exe");
 		options = new ChromeOptions();
-		options.setExperimentalOption("debuggerAddress", "localhost:9222"); // açık pencere portu
+		options.setExperimentalOption("debuggerAddress", port); // açık pencere portu
 		options.addArguments("--remote-allow-origins=*"); // popuplar ile ilgili
 		options.addArguments("--priority=high");
 	}
 
 	public static void startDriver() {
 		driver = new ChromeDriver(service, options);
+		System.out.println("Driver baslatildi.");
 	}
 
 	public static String targetXpath(int x, int y) {
@@ -90,6 +93,7 @@ public class Selenium {
 		try {
 			debuggerBuilder = new ProcessBuilder(cmd, parameter, commandRunBrowser);
 			process = debuggerBuilder.start();
+			System.out.println("chrome.exe debugger mod'ta baslatildi. port=" + port);
 			Thread.sleep(2000);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -116,7 +120,7 @@ public class Selenium {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("priorty is set.");
+		System.out.println("Priorty is set.");
 	}
 
 	public static void taskKill() {
@@ -125,6 +129,7 @@ public class Selenium {
 		try {
 			processBuilder = new ProcessBuilder(cmd, parameter, commandTaskKill);
 			process = processBuilder.start();
+			System.out.println("Tum \"chromedriver.exe\" yazilimlari durduruldu.");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -161,6 +166,7 @@ public class Selenium {
 		((JavascriptExecutor) driver)
 				.executeScript("document.getElementById('confirmEmailId').value='" + mailAddress + "';");
 
+		System.out.println("Giris sayfasi dolduruldu.");
 	}
 
 	public static void getAppointment(Integer count) {
@@ -175,6 +181,8 @@ public class Selenium {
 			Thread.sleep(500);
 			WebElement nextButtonElement = driver.findElement(By.xpath(appNextXpath));
 			((JavascriptExecutor) driver).executeScript("arguments[0].click()", nextButtonElement);
+
+			System.out.println("Otomatik randevu alindi.");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			getAppointment(count);
@@ -212,6 +220,7 @@ public class Selenium {
 
 		try {
 			Thread.sleep(6000);
+			System.out.println("Form doldurma islemi baslatildi.");
 			System.out.println("5 saniye bekletilecek");
 
 		} catch (InterruptedException e) {
@@ -280,7 +289,7 @@ public class Selenium {
 			Thread.sleep(3000);
 
 			for (int f = 0; f < count; f++) {
-				
+
 				((JavascriptExecutor) driver).executeScript("arguments[0].click()", nationElements.get(f));
 				turkeyElement = waitt.until(ExpectedConditions.elementToBeClickable(By.xpath(turkeyXpath)));
 				((JavascriptExecutor) driver).executeScript("arguments[0].click()", turkeyElement);
@@ -383,10 +392,10 @@ public class Selenium {
 						time = LocalTime.now();
 						System.out.println(time + " sayfa yuklendi");
 						label.setText("<html>Sayfa yenilendi.</html>");
-						
+
 						((JavascriptExecutor) driver).executeScript("arguments[0].click()", button);
 						System.out.println("Butona tıklandı ve 3 saniye bekletilecek");
-						label.setText("<html>Kontrol ediliyor..</html>");
+						label.setText("<html>Kontrol ediliyor..</html>a");
 						Thread.sleep(3000);
 
 						if (!driver.findElements(By.xpath(infoXpath)).isEmpty()) {
@@ -401,11 +410,9 @@ public class Selenium {
 
 							System.out.println("XPath bulunamadı.");
 							label.setText("<html><b>Randevu bulundu!!</></html>");
-							try {
-								Selenium.Sound();
-							} catch (LineUnavailableException e) {
-								e.printStackTrace();
-							}
+
+							Selenium.Sound();
+
 							if (autoGet == true) {
 								Selenium.getAppointment(countOfApp);
 							}
@@ -419,13 +426,16 @@ public class Selenium {
 				} catch (NoSuchElementException e) {
 					e.printStackTrace();
 					Selenium.startBot(selectedDay, label, countOfApp);
+				} catch (LineUnavailableException e) {
+					e.printStackTrace();
+					Selenium.startBot(selectedDay, label, countOfApp);
 				}
 				return null;
 			}
 
 			@Override
 			protected void done() {
-				// İşlem tamamlandığında burası çalışır (istediğiniz bir işlem yapılabilir).
+				
 			}
 		};
 		worker.execute();

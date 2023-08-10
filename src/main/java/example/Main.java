@@ -65,14 +65,14 @@ public class Main extends JFrame {
 		for (int i = 0; i < 31; i++) {
 			days[i] = i + 1;
 		}
-		//------------------icon-----------------------
+		//--------------------------icon--------------------------
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 400, 550);
 		setTitle(" Auto-Visa ");
 		ImageIcon icon = new ImageIcon("src/main/resources/icon.png");
 		setIconImage(icon.getImage());
 
-		//------------------MENU-------------------------
+		//---------------------------MENU--------------------------
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 
