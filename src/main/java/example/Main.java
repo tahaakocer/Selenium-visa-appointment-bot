@@ -170,6 +170,7 @@ public class Main extends JFrame {
 				try {
 					Selenium.running = true;
 					Selenium.startBot(selectedDay, lblInfo, countInteger);
+					
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

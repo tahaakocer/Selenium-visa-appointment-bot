@@ -61,7 +61,7 @@ public class MailSender {
 					InternetAddress.parse(recipient)
 			);
 			message.setSubject("Vize Randevu Botu");
-			Text = day + "-" + date.getMonth() + "-" + date.getYear() + " tarihine" +Selenium.numOfSpan + "adet vize randevusu açılmıştır.\n https://portal.russia-visacentre.com/#/appointment/personal-info/tur ";
+			Text = day + "-" + date.getMonth() + "-" + date.getYear() + " tarihine " +Selenium.numOfSpan + " adet vize randevusu açılmıştır.\n https://portal.russia-visacentre.com/#/appointment/personal-info/tur ";
 			message.setText(Text);
 			Transport.send(message);
 			System.out.println("Email sent");

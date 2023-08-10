@@ -52,7 +52,7 @@ public class Selenium {
 	private static String businessXpath = "//li[@aria-label='Business']";
 	private static String phoneNumXpath = "//input[@id='contactNo.%d']";
 	private static String mailAddressXpath = "//input[@id='emailAddress%d']";
-	private static String saveXpath = "//div[@id='ui-accordiontab-0-content']//span[@class='ui-button-text ui-clickable'][normalize-space()='Save']";
+	private static String saveXpath = "//div[@id='ui-accordiontab-%d-content']//span[@class='ui-button-text ui-clickable'][normalize-space()='Save']";
 	// ----------------------------------------------------------0 1 2 3 4 diye
 	// gidiyor
 	private static String proceedXpath = "//span[normalize-space()='Proceed']";
@@ -183,20 +183,10 @@ public class Selenium {
 			((JavascriptExecutor) driver).executeScript("arguments[0].click()", nextButtonElement);
 
 			System.out.println("Otomatik randevu alindi.");
+			
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-			getAppointment(count);
-
-		} catch (IndexOutOfBoundsException e) {
-			e.printStackTrace();
-			getAppointment(count);
-
-		} catch (NoSuchElementException e) {
-			e.printStackTrace();
-			getAppointment(count);
-
 		}
-
 	}
 
 	public static void fillAppointment(Integer count) {
@@ -395,7 +385,7 @@ public class Selenium {
 
 						((JavascriptExecutor) driver).executeScript("arguments[0].click()", button);
 						System.out.println("Butona tıklandı ve 3 saniye bekletilecek");
-						label.setText("<html>Kontrol ediliyor..</html>a");
+						label.setText("<html>Kontrol ediliyor..</html>");
 						Thread.sleep(3000);
 
 						if (!driver.findElements(By.xpath(infoXpath)).isEmpty()) {
@@ -412,10 +402,11 @@ public class Selenium {
 							label.setText("<html><b>Randevu bulundu!!</></html>");
 
 							Selenium.Sound();
-
+							
 							if (autoGet == true) {
 								Selenium.getAppointment(countOfApp);
 							}
+							
 							running = false;
 							MailSender.sendMail(selectedDay);
 							Thread.sleep(1000);
