@@ -30,6 +30,7 @@ public class Selenium {
 	public static boolean next = false;
 	public static boolean autoGet = false;
 	public static boolean running = false;
+	public static boolean autoFill = false;
 	public static Integer numOfSpan = 0;
 	private static LocalTime time;
 	private final static String port = "localhost:9222";
@@ -283,43 +284,44 @@ public class Selenium {
 				((JavascriptExecutor) driver).executeScript("arguments[0].click()", nationElements.get(f));
 				turkeyElement = waitt.until(ExpectedConditions.elementToBeClickable(By.xpath(turkeyXpath)));
 				((JavascriptExecutor) driver).executeScript("arguments[0].click()", turkeyElement);
-				Thread.sleep(500);
+				Thread.sleep(200);
 				lastNameElements.get(f).sendKeys(costumers.get(f).getLastName());
 				((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];",
 						lastNameElements.get(f), costumers.get(f).getLastName());
-				Thread.sleep(500);
+				Thread.sleep(200);
 				firstNameElements.get(f).sendKeys(costumers.get(f).getName());
 				((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];",
 						firstNameElements.get(f), costumers.get(f).getName());
-				Thread.sleep(500);
+				Thread.sleep(200);
 				passNoElements.get(f).sendKeys(costumers.get(f).getPassNum());
 				((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];", passNoElements.get(f),
 						costumers.get(f).getPassNum());
-				Thread.sleep(500);
+				Thread.sleep(200);
 				dateElements.get(f).sendKeys(costumers.get(f).getDate());
 				((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];", dateElements.get(f),
 						costumers.get(f).getDate());
-				Thread.sleep(500);
+				Thread.sleep(200);
 				((JavascriptExecutor) driver).executeScript("arguments[0].click()", typeElements.get(f));
 				typeElement = waitt.until(ExpectedConditions.elementToBeClickable(By.xpath(businessXpath)));
 				((JavascriptExecutor) driver).executeScript("arguments[0].click()", typeElement);
-				Thread.sleep(500);
+				Thread.sleep(200);
 				phoneNumElements.get(f).sendKeys(costumers.get(f).getPhoneNum());
 				((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];",
 						phoneNumElements.get(f), costumers.get(f).getPhoneNum());
-				Thread.sleep(500);
+				Thread.sleep(200);
 				mailAddressElements.get(f).sendKeys(costumers.get(f).getMailAddress(driver));
 				((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];",
 						mailAddressElements.get(f), costumers.get(f).getMailAddress(driver));
 
-				Thread.sleep(2500);
+				Thread.sleep(1500);
 				((JavascriptExecutor) driver).executeScript("arguments[0].click()", saveElements.get(f));
 
-				Thread.sleep(3000);
+				Thread.sleep(2500);
 				System.out.println("2.5 saniye bekletilecek");
 
 			}
-
+			WebElement proocedElement = waitt.until(ExpectedConditions.elementToBeClickable(By.xpath(proceedXpath)));
+			((JavascriptExecutor) driver).executeScript("arguments[0].click()", proocedElement);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -406,11 +408,14 @@ public class Selenium {
 							if (autoGet == true) {
 								Selenium.getAppointment(countOfApp);
 							}
-							
+				
 							running = false;
 							MailSender.sendMail(selectedDay);
-							Thread.sleep(1000);
-							// Selenium.fillAppointment(countOfApp);
+							if(autoFill == true) {
+								Thread.sleep(4000);
+								Selenium.fillAppointment(countOfApp);
+							}
+							
 
 						}
 					}

@@ -67,7 +67,7 @@ public class Main extends JFrame {
 		}
 		//--------------------------icon--------------------------
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 400, 550);
+		setBounds(100, 100, 425, 680);
 		setTitle(" Auto-Visa ");
 		ImageIcon icon = new ImageIcon("src/main/resources/icon.png");
 		setIconImage(icon.getImage());
@@ -122,7 +122,7 @@ public class Main extends JFrame {
 		lblOtomatikVizeRandevu.setFont(new Font("Tahoma", Font.BOLD, 22));
 		lblOtomatikVizeRandevu.setBackground(new Color(14, 16, 120));
 		lblOtomatikVizeRandevu.setAlignmentX(0.5f);
-		lblOtomatikVizeRandevu.setBounds(0, 0, 384, 91);
+		lblOtomatikVizeRandevu.setBounds(0, 0, 404, 91);
 		contentPane.add(lblOtomatikVizeRandevu);
         
 		//--------------------BİLGİLENDİRME LABELİ-------------------------
@@ -132,16 +132,16 @@ public class Main extends JFrame {
 		lblInfo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblInfo.setForeground(new Color(204, 0, 0));
 		lblInfo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblInfo.setBounds(10, 418, 364, 60);
+		lblInfo.setBounds(32, 535, 352, 60);
 		contentPane.add(lblInfo);
 		//-----------------------COMBOBOXLAR---------------------------------
 		comboBox = new JComboBox(days);
-		comboBox.setBounds(192, 213, 100, 40);
+		comboBox.setBounds(196, 248, 100, 40);
 		contentPane.add(comboBox);
 
 		comboBox_Adet = new JComboBox(adet);
 		comboBox_Adet.setForeground(new Color(0, 0, 0));
-		comboBox_Adet.setBounds(192, 163, 100, 40);
+		comboBox_Adet.setBounds(196, 118, 100, 40);
 		contentPane.add(comboBox_Adet);
 		
 		//----------------------BROWSERI BAŞLAT BUTONU-------------------------
@@ -155,7 +155,7 @@ public class Main extends JFrame {
 				Selenium.fillFirstPage(adetInteger);
 			}
 		});
-		btnStartBrowser.setBounds(92, 102, 200, 50);
+		btnStartBrowser.setBounds(98, 171, 203, 50);
 		contentPane.add(btnStartBrowser);
 
 		//-------------------------BAŞLAT BUTONU-------------------------------
@@ -177,7 +177,7 @@ public class Main extends JFrame {
 				}
 			}
 		});
-		btnStart.setBounds(202, 297, 90, 50);
+		btnStart.setBounds(209, 398, 90, 50);
 		contentPane.add(btnStart);
 
 		//---------------------------DURDUR BUTONU----------------------------
@@ -188,13 +188,13 @@ public class Main extends JFrame {
 				lblInfo.setText("Durduruldu.");
 			}
 		});
-		btnStop.setBounds(92, 297, 90, 50);
+		btnStop.setBounds(98, 398, 90, 50);
 		contentPane.add(btnStop);
 		
 		//---------------------BİR SONRAKİ AY CHECKBOXI------------------------
 		final JCheckBox chckboxNextMonth = new JCheckBox("Bir Sonraki Ay");
 		chckboxNextMonth.setFont(new Font("Tahoma", Font.PLAIN, 9));
-		chckboxNextMonth.setBounds(202, 260, 90, 23);
+		chckboxNextMonth.setBounds(196, 295, 103, 23);
 		chckboxNextMonth.setSelected(false);
 		chckboxNextMonth.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -208,18 +208,18 @@ public class Main extends JFrame {
 		JLabel lblDay = new JLabel("Gün : ");
 		lblDay.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDay.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblDay.setBounds(92, 213, 90, 40);
+		lblDay.setBounds(98, 245, 90, 40);
 		contentPane.add(lblDay);
 		
 		//------------------------ADET LABELI---------------------------
 		JLabel lblAdet = new JLabel("Adet : ");
 		lblAdet.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAdet.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblAdet.setBounds(92, 163, 90, 40);
+		lblAdet.setBounds(96, 115, 90, 40);
 		contentPane.add(lblAdet);
 		
 		//---------------------OTOMATİK AL CHECKBOX-----------------
-		final JCheckBox chckboxGetApp = new JCheckBox("Otomatik Al");
+		final JCheckBox chckboxGetApp = new JCheckBox("Randevuyu Otomatik Al");
 		chckboxGetApp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Selenium.autoGet = chckboxGetApp.isSelected();
@@ -228,16 +228,12 @@ public class Main extends JFrame {
 		});
 		chckboxGetApp.setSelected(false);
 		chckboxGetApp.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		chckboxGetApp.setBounds(92, 260, 90, 23);
+		chckboxGetApp.setBounds(98, 335, 200, 23);
 		contentPane.add(chckboxGetApp);
 		
 		ImageIcon icon1 = new ImageIcon("src/main/resources/info.png");
 		Image scaledImage = icon1.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
 		 ImageIcon scaledIcon = new ImageIcon(scaledImage);
-		JButton btnInfo = new JButton(scaledIcon);
-		btnInfo.setPreferredSize(new Dimension(icon1.getIconWidth(),icon1.getIconHeight()));
-		btnInfo.setBounds(75, 265, 15, 15);
-		contentPane.add(btnInfo);
 		
 		//-----------------------FORMU DOLDUR BUTONU----------------------------
 		JButton btnFillApp = new JButton("Formu Doldur");
@@ -247,8 +243,20 @@ public class Main extends JFrame {
 				Selenium.fillAppointment(adet);
 			}
 		});
-		btnFillApp.setBounds(131, 358, 120, 50);
+		btnFillApp.setBounds(140, 465, 120, 50);
 		contentPane.add(btnFillApp);
+		
+		final JCheckBox chckboxGetForm = new JCheckBox("Formu Otomatik Doldur");
+		chckboxGetForm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Selenium.autoFill = chckboxGetForm.isSelected();
+				System.out.println("autoFill : " + Selenium.autoFill);				
+			}
+		});
+		chckboxGetForm.setSelected(false);
+		chckboxGetForm.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		chckboxGetForm.setBounds(98, 361, 200, 23);
+		contentPane.add(chckboxGetForm);
 
 	}
 }
