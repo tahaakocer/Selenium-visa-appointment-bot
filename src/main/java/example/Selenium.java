@@ -174,20 +174,21 @@ public class Selenium {
 
 		List<WebElement> spanElements = driver.findElements(By.xpath(appTimeXpath));
 		numOfSpan = spanElements.size();
-		try {
-			for (int i = 0; i < count; i++) {
-				Thread.sleep(50);
-				((JavascriptExecutor) driver).executeScript("arguments[0].click()", spanElements.get(i));
-			}
-			Thread.sleep(500);
-			WebElement nextButtonElement = driver.findElement(By.xpath(appNextXpath));
-			((JavascriptExecutor) driver).executeScript("arguments[0].click()", nextButtonElement);
+		 try {
+		        for (int i = numOfSpan - 1; i >= numOfSpan - count; i--) {
+		            Thread.sleep(50);
+		            ((JavascriptExecutor) driver).executeScript("arguments[0].click()", spanElements.get(i));
+		        }
+		        
+		        Thread.sleep(500);
+		        WebElement nextButtonElement = driver.findElement(By.xpath(appNextXpath));
+		        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", nextButtonElement);
 
-			System.out.println("Otomatik randevu alindi.");
-			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		        System.out.println("Otomatik randevu alindi.");
+		        
+		    } catch (InterruptedException e) {
+		        e.printStackTrace();
+		    }
 	}
 
 	public static void fillAppointment(Integer count) {
@@ -402,15 +403,24 @@ public class Selenium {
 
 							System.out.println("XPath bulunamadı.");
 							label.setText("<html><b>Randevu bulundu!!</></html>");
-
+							
+							Thread emailThread = new Thread(() -> {
+							    try {
+							        MailSender.sendMail(selectedDay);
+							    } catch (Exception e) {
+							        e.printStackTrace();
+							    }
+							});
+							emailThread.start();
+							
 							Selenium.Sound();
 							
 							if (autoGet == true) {
 								Selenium.getAppointment(countOfApp);
 							}
-				
+							
 							running = false;
-							MailSender.sendMail(selectedDay);
+							
 							if(autoFill == true) {
 								Thread.sleep(4000);
 								Selenium.fillAppointment(countOfApp);

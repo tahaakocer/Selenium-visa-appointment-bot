@@ -19,7 +19,7 @@ import javax.mail.internet.MimeMessage;
 
 public class MailSender {
 	private static String username;
-	private static final String recipient = "kocerercan@gmail.com";//kocerercan@gmail.com
+	private static final String recipient = "taha.kocer317@gmail.com";//kocerercan@gmail.com
 	private static String password;
 	public static String Text = "";
 	private static Properties mailProperties;
