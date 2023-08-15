@@ -1,13 +1,16 @@
 package example;
 
+import java.awt.event.ItemEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.openqa.selenium.By;
@@ -21,35 +24,40 @@ public class Person {
 	private String date;
 	private String phoneNum;
 	private Random random;
-	private String namesFilePath = "src/main/resources/names.txt";
-	private String surnamesFilePath = "src/main/resources/surnames.txt";
+	private InputStream namesFilePath;
+	private InputStream surnamesFilePath;
 	private ArrayList<String> names = new ArrayList<String>();
 	private ArrayList<String> surnames = new ArrayList<String>();
 	private File file;
 	private FileReader fileReader = null;
 	private BufferedReader bufferedReader;
+	private ClassLoader classLoader;
 
 	public Person() {
 		random = new Random();
-		setArrays(namesFilePath, names);
-		setArrays(surnamesFilePath, surnames);
-	}
-
-	public void setArrays(String filePath, ArrayList<String> list) {
+		classLoader = getClass().getClassLoader();
+		namesFilePath = classLoader.getResourceAsStream("names.txt");
+		surnamesFilePath = classLoader.getResourceAsStream("surnames.txt");
 		try {
-	        file = new File(filePath);
-	        fileReader = new FileReader(file);
-	        bufferedReader = new BufferedReader(fileReader);
-
-	        String line;
-
-	        while ((line = bufferedReader.readLine()) != null) {
-	            list.add(line);
-	        }
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
+			setArrays(namesFilePath, names);
+			setArrays(surnamesFilePath, surnames);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+
+	public void setArrays(InputStream inputStream, ArrayList<String> list) throws IOException {
+
+		  Scanner scanner = new Scanner(inputStream);
+		  
+		  while (scanner.hasNextLine()) {
+		    String line = scanner.nextLine();
+		    list.add(line);
+		  }
+		  
+		  scanner.close();
+		}
 
 	public String getName() {
 		int randomIndex = random.nextInt(names.size());

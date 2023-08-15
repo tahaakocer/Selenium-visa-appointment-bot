@@ -402,7 +402,8 @@ public class Selenium {
 						} else if (!driver.findElements(By.xpath(appTimeXpath)).isEmpty()) {
 
 							System.out.println("XPath bulunamadı.");
-							label.setText("<html><b>Randevu bulundu!!</></html>");
+							label.setText(countOfApp +"<html><b> adet Randevu bulundu!!</></html>");
+							System.out.println(countOfApp + "adet randevu bulundu!");
 							
 							Thread emailThread = new Thread(() -> {
 							    try {

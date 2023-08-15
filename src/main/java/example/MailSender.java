@@ -26,6 +26,7 @@ public class MailSender {
 	private static InputStream input = null;
 	private static LocalDate date = LocalDate.now();
 	
+	
 	public static void sendMail(String day) {
 		
 		Properties properties = new Properties();
@@ -37,8 +38,9 @@ public class MailSender {
 		
 		
 		try {
+			
 			mailProperties = new Properties();
-			input = new FileInputStream("src/main/resources/mail.properties");
+			input = ClassLoader.getSystemClassLoader().getResourceAsStream("mail.properties");			
 			mailProperties.load(input);
 			username = mailProperties.getProperty("username");
 			password = mailProperties.getProperty("password");

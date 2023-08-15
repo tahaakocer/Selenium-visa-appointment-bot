@@ -78,7 +78,9 @@ public class Main extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 425, 680);
 		setTitle(" Auto-Visa ");
-		ImageIcon icon = new ImageIcon("src/main/resources/icon.png");
+		
+		ClassLoader classLoader = getClass().getClassLoader();
+		ImageIcon icon = new ImageIcon(classLoader.getResource("icon.png"));
 		setIconImage(icon.getImage());
 
 		// ---------------------------MENU--------------------------
