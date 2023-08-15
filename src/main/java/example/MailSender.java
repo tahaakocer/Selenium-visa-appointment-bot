@@ -19,7 +19,7 @@ import javax.mail.internet.MimeMessage;
 
 public class MailSender {
 	private static String username;
-	private static final String recipient = "taha.kocer317@gmail.com";//kocerercan@gmail.com
+	private static String recipient;
 	private static String password;
 	public static String Text = "";
 	private static Properties mailProperties;
@@ -40,8 +40,10 @@ public class MailSender {
 		try {
 			
 			mailProperties = new Properties();
-			input = ClassLoader.getSystemClassLoader().getResourceAsStream("mail.properties");			
+		//	input = ClassLoader.getSystemClassLoader().getResourceAsStream("mail.properties");		
+			input = new FileInputStream("./config/mail.properties");
 			mailProperties.load(input);
+			recipient = mailProperties.getProperty("recipient");
 			username = mailProperties.getProperty("username");
 			password = mailProperties.getProperty("password");
 			input.close();		

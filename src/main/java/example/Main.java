@@ -133,7 +133,7 @@ public class Main extends JFrame {
 		lblOtomatikVizeRandevu.setFont(new Font("Tahoma", Font.BOLD, 22));
 		lblOtomatikVizeRandevu.setBackground(new Color(14, 16, 120));
 		lblOtomatikVizeRandevu.setAlignmentX(0.5f);
-		lblOtomatikVizeRandevu.setBounds(0, 0, 404, 91);
+		lblOtomatikVizeRandevu.setBounds(0, 0, 409, 91);
 		contentPane.add(lblOtomatikVizeRandevu);
 
 		// --------------------BİLGİLENDİRME LABELİ-------------------------
@@ -180,7 +180,6 @@ public class Main extends JFrame {
 				String count = comboBox_Adet.getSelectedItem().toString();
 				Integer countInteger = Integer.valueOf(count);
 				System.out.println(selectedDay);
-				// Selenium.fillAppointment(countInteger);
 				try {
 					Selenium.running = true;
 					Selenium.startBot(selectedDay, lblInfo, countInteger);
