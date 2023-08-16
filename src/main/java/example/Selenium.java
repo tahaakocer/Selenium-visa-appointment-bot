@@ -12,6 +12,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,7 +172,6 @@ public class Selenium {
 	}
 
 	public static void getAppointment(Integer count) {
-
 		List<WebElement> spanElements = driver.findElements(By.xpath(appTimeXpath));
 		numOfSpan = spanElements.size();
 		try {
@@ -181,14 +182,15 @@ public class Selenium {
 			Thread.sleep(100);
 			WebElement nextButtonElement = driver.findElement(By.xpath(appNextXpath));
 			((JavascriptExecutor) driver).executeScript("arguments[0].click()", nextButtonElement);
-			
+
 			if (!driver.findElements(By.xpath(OKxpath)).isEmpty()) {
 				WebElement oKButtonElement = driver.findElement(By.xpath(OKxpath));
 				((JavascriptExecutor) driver).executeScript("arguments[0].click()", oKButtonElement);
 				getAppointment(count);
-			
-			}else if(driver.findElements(By.xpath(OKxpath)).isEmpty()) {
+
+			} else if (driver.findElements(By.xpath(OKxpath)).isEmpty()) {
 				System.out.println("Otomatik randevu alindi.");
+
 			}
 
 		} catch (InterruptedException e) {
@@ -372,36 +374,42 @@ public class Selenium {
 				y = DayTable.getRowNumber(driver, selectedDay);
 				try {
 					Integer sayac = 0;
+					LocalDateTime lastRefresh = LocalDateTime.now();
+					boolean refresh = true;
 					while (running) {
-						if (sayac % 40 == 0) {
+						if (sayac % 250 == 0) {
 							setPriority();
 						}
-						if (next == true) {
+						if (next == true && refresh == true) {
 							wait2 = new WebDriverWait(driver, duration2);
 							nextMonth = wait2
 									.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(nextMonthXpath)));
 							((JavascriptExecutor) driver).executeScript("arguments[0].click()", nextMonth);
 							Thread.sleep(1000);
+							refresh = false;
 						}
 						formattedXpath = String.format(buttonXpath, y, x);
 						wait2 = new WebDriverWait(driver, duration2);
 						button = wait2.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(formattedXpath)));
-						time = LocalTime.now();
-						System.out.println(time + ": sayfa yuklendi");
-						label.setText("<html>Sayfa yenilendi.</html>");
 
 						((JavascriptExecutor) driver).executeScript("arguments[0].click()", button);
-						System.out.println("Butona tiklandi, 3 saniye bekletilecek");
+						System.out.println("Butona tiklandi, 1 saniye bekletilecek");
 						label.setText("<html>Kontrol ediliyor..</html>");
-						Thread.sleep(2000);
+						sayac++;
+						Thread.sleep(1000);
 
 						if (!driver.findElements(By.xpath(infoXpath)).isEmpty()) {
-							System.out.println("XPath bulundu.");
+							LocalDateTime now = LocalDateTime.now();
+
+							System.out.println(now + " XPath bulundu. ");
 							label.setText("<html>Randevu Yok.<br>Sayfa yenileniyor..</html>");
-							driver.navigate().refresh();
-							System.out.println("Sayfa yenileniyor..");
-							driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(17));
-							sayac++;
+
+							if (now.isAfter(lastRefresh.plusMinutes(15))) {
+								driver.navigate().refresh();
+								refresh = true;
+								lastRefresh = now;
+								Thread.sleep(5000);
+							}
 
 						} else if (!driver.findElements(By.xpath(appTimeXpath)).isEmpty()) {
 
@@ -418,11 +426,11 @@ public class Selenium {
 							});
 							emailThread.start();
 
-							Selenium.Sound();
-
 							if (autoGet == true) {
 								Selenium.getAppointment(countOfApp);
 							}
+
+							Selenium.Sound();
 
 							running = false;
 

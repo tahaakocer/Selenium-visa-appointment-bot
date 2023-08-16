@@ -148,18 +148,17 @@ public class Main extends JFrame {
 		textArea.setEditable(false);
 
 		JScrollPane scrollPane = new JScrollPane(textArea);
-		
+
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		panel_textarea.setLayout(null);
 		panel_textarea.add(scrollPane);
 		scrollPane.setBounds(10, 20, 562, 499);
-		
+
 		RedirectedConsole console = new RedirectedConsole(textArea);
 		Thread consoleThread = new Thread(() -> {
 			console.redirectSystemOutAndErr();
 		});
 		consoleThread.start();
-
 
 		// Otomatik kaydırma için caret pozisyonunu en sona ayarlayın
 		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
@@ -294,21 +293,21 @@ public class Main extends JFrame {
 				System.out.println("nextMonth: " + Selenium.next);
 			}
 		});
-		
+
 		chckboxGetApp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Selenium.autoGet = chckboxGetApp.isSelected();
 				System.out.println("autoGet : " + Selenium.autoGet);
 			}
 		});
-		
+
 		chckboxGetForm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Selenium.autoFill = chckboxGetForm.isSelected();
 				System.out.println("autoFill : " + Selenium.autoFill);
 			}
 		});
-		
+
 		btnStartBrowser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				setClickable(true);
