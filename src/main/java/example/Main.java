@@ -154,11 +154,11 @@ public class Main extends JFrame {
 		panel_textarea.add(scrollPane);
 		scrollPane.setBounds(10, 20, 562, 499);
 		
-	/*	RedirectedConsole console = new RedirectedConsole(textArea);
+		RedirectedConsole console = new RedirectedConsole(textArea);
 		Thread consoleThread = new Thread(() -> {
 			console.redirectSystemOutAndErr();
 		});
-		consoleThread.start();*/
+		consoleThread.start();
 
 
 		// Otomatik kaydırma için caret pozisyonunu en sona ayarlayın

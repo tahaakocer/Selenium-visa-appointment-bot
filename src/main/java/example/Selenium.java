@@ -54,9 +54,8 @@ public class Selenium {
 	private static String phoneNumXpath = "//input[@id='contactNo.%d']";
 	private static String mailAddressXpath = "//input[@id='emailAddress%d']";
 	private static String saveXpath = "//div[@id='ui-accordiontab-%d-content']//span[@class='ui-button-text ui-clickable'][normalize-space()='Save']";
-	// ----------------------------------------------------------0 1 2 3 4 diye
-	// gidiyor
 	private static String proceedXpath = "//span[normalize-space()='Proceed']";
+	private static String OKxpath = "//span[normalize-space()='OK']";
 
 	private static ChromeOptions options;
 	public static WebDriver driver;
@@ -174,21 +173,27 @@ public class Selenium {
 
 		List<WebElement> spanElements = driver.findElements(By.xpath(appTimeXpath));
 		numOfSpan = spanElements.size();
-		 try {
-		        for (int i = numOfSpan - 1; i >= numOfSpan - count; i--) {
-		            Thread.sleep(50);
-		            ((JavascriptExecutor) driver).executeScript("arguments[0].click()", spanElements.get(i));
-		        }
-		        
-		        Thread.sleep(500);
-		        WebElement nextButtonElement = driver.findElement(By.xpath(appNextXpath));
-		        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", nextButtonElement);
+		try {
+			for (int i = numOfSpan - 1; i >= numOfSpan - count; i--) {
+				((JavascriptExecutor) driver).executeScript("arguments[0].click()", spanElements.get(i));
+			}
 
-		        System.out.println("Otomatik randevu alindi.");
-		        
-		    } catch (InterruptedException e) {
-		        e.printStackTrace();
-		    }
+			Thread.sleep(100);
+			WebElement nextButtonElement = driver.findElement(By.xpath(appNextXpath));
+			((JavascriptExecutor) driver).executeScript("arguments[0].click()", nextButtonElement);
+			
+			if (!driver.findElements(By.xpath(OKxpath)).isEmpty()) {
+				WebElement oKButtonElement = driver.findElement(By.xpath(OKxpath));
+				((JavascriptExecutor) driver).executeScript("arguments[0].click()", oKButtonElement);
+				getAppointment(count);
+			
+			}else if(driver.findElements(By.xpath(OKxpath)).isEmpty()) {
+				System.out.println("Otomatik randevu alindi.");
+			}
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void fillAppointment(Integer count) {
@@ -382,13 +387,13 @@ public class Selenium {
 						wait2 = new WebDriverWait(driver, duration2);
 						button = wait2.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(formattedXpath)));
 						time = LocalTime.now();
-						System.out.println(time + " sayfa yuklendi");
+						System.out.println(time + ": sayfa yuklendi");
 						label.setText("<html>Sayfa yenilendi.</html>");
 
 						((JavascriptExecutor) driver).executeScript("arguments[0].click()", button);
 						System.out.println("Butona tiklandi, 3 saniye bekletilecek");
 						label.setText("<html>Kontrol ediliyor..</html>");
-						Thread.sleep(3000);
+						Thread.sleep(2000);
 
 						if (!driver.findElements(By.xpath(infoXpath)).isEmpty()) {
 							System.out.println("XPath bulundu.");
@@ -401,31 +406,30 @@ public class Selenium {
 						} else if (!driver.findElements(By.xpath(appTimeXpath)).isEmpty()) {
 
 							System.out.println("XPath bulunamadı.");
-							label.setText(countOfApp +"<html><b> adet Randevu bulundu!!</></html>");
-							System.out.println(countOfApp + "adet randevu bulundu!");
-							
+							label.setText(numOfSpan + " adet Randevu bulundu!!");
+							System.out.println(numOfSpan + "adet randevu bulundu!");
+
 							Thread emailThread = new Thread(() -> {
-							    try {
-							        MailSender.sendMail(selectedDay);
-							    } catch (Exception e) {
-							        e.printStackTrace();
-							    }
+								try {
+									MailSender.sendMail(selectedDay);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 							});
 							emailThread.start();
-							
+
 							Selenium.Sound();
-							
+
 							if (autoGet == true) {
 								Selenium.getAppointment(countOfApp);
 							}
-							
+
 							running = false;
-							
-							if(autoFill == true) {
+
+							if (autoFill == true) {
 								Thread.sleep(4000);
 								Selenium.fillAppointment(countOfApp);
 							}
-							
 
 						}
 					}
