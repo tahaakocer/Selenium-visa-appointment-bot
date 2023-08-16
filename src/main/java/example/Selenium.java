@@ -213,7 +213,6 @@ public class Selenium {
 		try {
 			Thread.sleep(6000);
 			System.out.println("Form doldurma islemi baslatildi.");
-			System.out.println("5 saniye bekletilecek");
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -275,7 +274,7 @@ public class Selenium {
 			System.out.println(formattedSaveXpath);
 			saveElements.add(driver.findElement(By.xpath(formattedSaveXpath)));
 		}
-
+		System.out.println("XPathler listelere aktarıldı. Doldurma islemi 3 saniye sonra gerceklesecek.");
 		try {
 
 			Thread.sleep(3000);
@@ -318,7 +317,7 @@ public class Selenium {
 				((JavascriptExecutor) driver).executeScript("arguments[0].click()", saveElements.get(f));
 
 				Thread.sleep(2500);
-				System.out.println("2.5 saniye bekletilecek");
+				System.out.println("Form dolduruldu. 2.5 saniye bekletilecek");
 
 			}
 			WebElement proocedElement = waitt.until(ExpectedConditions.elementToBeClickable(By.xpath(proceedXpath)));
@@ -387,7 +386,7 @@ public class Selenium {
 						label.setText("<html>Sayfa yenilendi.</html>");
 
 						((JavascriptExecutor) driver).executeScript("arguments[0].click()", button);
-						System.out.println("Butona tıklandı ve 3 saniye bekletilecek");
+						System.out.println("Butona tiklandi, 3 saniye bekletilecek");
 						label.setText("<html>Kontrol ediliyor..</html>");
 						Thread.sleep(3000);
 
@@ -442,7 +441,6 @@ public class Selenium {
 
 			@Override
 			protected void done() {
-				
 			}
 		};
 		worker.execute();
