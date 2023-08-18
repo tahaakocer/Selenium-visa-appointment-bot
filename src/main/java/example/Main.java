@@ -3,40 +3,36 @@ package example;
 /**
  * @author Taha Kocer
  */
+
+
+
+/* eğer seçilen adet kadar randevu açılmadıysa, randevuyu alana kadar tekrar kontrol et. (cuma günü için)
+ * 
+ * bunu opsiyonel hale getir.
+ * 
+ * form doldurma işlemi el ile müdahele edildiği zaman çalışmıyor.
+ * */
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultCaret;
-
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.Color;
-import java.awt.Dimension;
-
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
-import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JSeparator;
-import javax.swing.JTextField;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 
 public class Main extends JFrame {
@@ -318,6 +314,16 @@ public class Main extends JFrame {
 				Selenium.fillFirstPage(adetInteger);
 			}
 		});
+		
+		btnFillApp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String count = comboBox_Adet.getSelectedItem().toString();
+				Integer countInteger = Integer.valueOf(count);
+				Selenium.fillAppointment(countInteger);
+			}
+		});
+		
+		
 
 	}
 

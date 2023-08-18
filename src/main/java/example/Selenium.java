@@ -12,7 +12,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -23,8 +22,8 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.Port;
 import javax.sound.sampled.SourceDataLine;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingWorker;
 
@@ -35,7 +34,7 @@ public class Selenium {
 	public static boolean autoFill = false;
 	public static Integer numOfSpan = 0;
 	private static LocalTime time;
-	private final static String port = "localhost:9222";
+	private final static String port = "9222";
 	private static String infoXpath = "/html/body/app-root/app-appointment-layout/html/body/div/div/div/div[2]/app-appointment-slots/div/form/div[2]/div/div/form/div/h2";
 	private static String buttonXpath = "/html/body/app-root/app-appointment-layout/html/body/div/div/div/div[2]/app-appointment-slots/div/form/div[2]/div/div/div/p-calendar/span/div/div/div[2]/table/tbody/tr[%d]/td[%d]/a";
 	private static String nextMonthXpath = "/html/body/app-root/app-appointment-layout/html/body/div/div/div/div[2]/app-appointment-slots/div/form/div[2]/div/div/div/p-calendar/span/div/div/div[1]/a[2]";
@@ -66,7 +65,8 @@ public class Selenium {
 	private static String mailAddress = "taha.kocer317@gmail.com";
 	final private static String cmd = "cmd.exe";
 	final private static String parameter = "/c";
-	final private static String commandRunBrowser = "chrome.exe -remote-debugging-port=9222 --user-data-dir=\"C:\\Selenium\\Chrome_Test_Profile\"";
+	final private static String commandRunBrowser = "chrome.exe -remote-debugging-port=" + port
+			+ " --user-data-dir=\"C:\\Selenium\\Chrome_Test_Profile\"";
 	final private static String commandPriority1 = "wmic process where name=\"chrome.exe\" CALL setpriority realtime";
 	final private static String commandPriority2 = "wmic process where name=\"chromedriver.exe\" CALL setpriority realtime";
 	final private static String commandTaskKill = "Taskkill /f /im \"chromedriver.exe\"";
@@ -75,7 +75,7 @@ public class Selenium {
 		service = new ChromeDriverService.Builder().withLogOutput(System.out).build();
 		System.setProperty("webdriver.chrome.driver", "C:\\Selenium\\chromedriver.exe");
 		options = new ChromeOptions();
-		options.setExperimentalOption("debuggerAddress", port); // açık pencere portu
+		options.setExperimentalOption("debuggerAddress", "localhost" + port); // açık pencere portu
 		options.addArguments("--remote-allow-origins=*"); // popuplar ile ilgili
 		options.addArguments("--priority=high");
 	}
@@ -172,25 +172,37 @@ public class Selenium {
 		System.out.println("Giris sayfasi dolduruldu.");
 	}
 
-	public static void getAppointment(Integer count) {
+	public static void getAppointment(Integer count, WebElement button) {
+
 		List<WebElement> spanElements = driver.findElements(By.xpath(appTimeXpath));
 		numOfSpan = spanElements.size();
 		try {
-			for (int i = numOfSpan - 1; i >= numOfSpan - count; i--) {
-				((JavascriptExecutor) driver).executeScript("arguments[0].click()", spanElements.get(i));
-			}
 
-			Thread.sleep(100);
-			WebElement nextButtonElement = driver.findElement(By.xpath(appNextXpath));
-			((JavascriptExecutor) driver).executeScript("arguments[0].click()", nextButtonElement);
+			if (count <= numOfSpan) {
 
-			if (!driver.findElements(By.xpath(OKxpath)).isEmpty()) {
-				WebElement oKButtonElement = driver.findElement(By.xpath(OKxpath));
-				((JavascriptExecutor) driver).executeScript("arguments[0].click()", oKButtonElement);
-				getAppointment(count);
+				for (int i = numOfSpan - 1; i >= numOfSpan - count; i--) {
+					((JavascriptExecutor) driver).executeScript("arguments[0].click()", spanElements.get(i));
+				}
 
-			} else if (driver.findElements(By.xpath(OKxpath)).isEmpty()) {
-				System.out.println("Otomatik randevu alindi.");
+				Thread.sleep(100);
+				WebElement nextButtonElement = driver.findElement(By.xpath(appNextXpath));
+				((JavascriptExecutor) driver).executeScript("arguments[0].click()", nextButtonElement);
+
+				if (!driver.findElements(By.xpath(OKxpath)).isEmpty()) {
+					WebElement oKButtonElement = driver.findElement(By.xpath(OKxpath));
+					((JavascriptExecutor) driver).executeScript("arguments[0].click()", oKButtonElement);
+					getAppointment(count, button);
+
+				} else if (driver.findElements(By.xpath(OKxpath)).isEmpty()) {
+					System.out.println("Otomatik randevu alindi.");
+
+				}
+			} else {
+
+				((JavascriptExecutor) driver).executeScript("arguments[0].click()", button);
+				System.out.println("Butona tiklandi, 1 saniye bekletilecek");
+				Thread.sleep(1000);
+				getAppointment(count, button);
 
 			}
 
@@ -398,12 +410,12 @@ public class Selenium {
 						label.setText("<html>Kontrol ediliyor..</html>");
 						sayac++;
 						Thread.sleep(1000);
-						
+
 						if (!driver.findElements(By.xpath(yesXpath)).isEmpty()) {
 							WebElement yesElement = driver.findElement(By.xpath(yesXpath));
 							((JavascriptExecutor) driver).executeScript("arguments[0].click()", yesElement);
 						}
-						
+
 						if (!driver.findElements(By.xpath(infoXpath)).isEmpty()) {
 							LocalDateTime now = LocalDateTime.now();
 
@@ -419,7 +431,6 @@ public class Selenium {
 
 						} else if (!driver.findElements(By.xpath(appTimeXpath)).isEmpty()) {
 
-
 							Thread emailThread = new Thread(() -> {
 								try {
 									MailSender.sendMail(selectedDay);
@@ -429,15 +440,23 @@ public class Selenium {
 							});
 							emailThread.start();
 
+							Thread soundThread = new Thread(() -> {
+								try {
+									Selenium.Sound();
+								} catch (LineUnavailableException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							});
+							soundThread.start();
+
 							if (autoGet == true) {
-								Selenium.getAppointment(countOfApp);
+								Selenium.getAppointment(countOfApp, button);
 							}
-							
+
 							System.out.println("XPath bulunamadı.");
 							label.setText(numOfSpan + " adet Randevu bulundu!!");
 							System.out.println(numOfSpan + "adet randevu bulundu!");
-							
-							Selenium.Sound();
 
 							running = false;
 
@@ -449,9 +468,6 @@ public class Selenium {
 						}
 					}
 				} catch (NoSuchElementException e) {
-					e.printStackTrace();
-					Selenium.startBot(selectedDay, label, countOfApp);
-				} catch (LineUnavailableException e) {
 					e.printStackTrace();
 					Selenium.startBot(selectedDay, label, countOfApp);
 				}
