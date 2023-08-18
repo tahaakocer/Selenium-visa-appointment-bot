@@ -58,6 +58,7 @@ public class Selenium {
 	private static String saveXpath = "//div[@id='ui-accordiontab-%d-content']//span[@class='ui-button-text ui-clickable'][normalize-space()='Save']";
 	private static String proceedXpath = "//span[normalize-space()='Proceed']";
 	private static String OKxpath = "//span[normalize-space()='OK']";
+	private static String yesXpath = "//span[normalize-space()='Yes']";
 
 	private static ChromeOptions options;
 	public static WebDriver driver;
@@ -397,7 +398,12 @@ public class Selenium {
 						label.setText("<html>Kontrol ediliyor..</html>");
 						sayac++;
 						Thread.sleep(1000);
-
+						
+						if (!driver.findElements(By.xpath(yesXpath)).isEmpty()) {
+							WebElement yesElement = driver.findElement(By.xpath(yesXpath));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click()", yesElement);
+						}
+						
 						if (!driver.findElements(By.xpath(infoXpath)).isEmpty()) {
 							LocalDateTime now = LocalDateTime.now();
 
@@ -413,9 +419,6 @@ public class Selenium {
 
 						} else if (!driver.findElements(By.xpath(appTimeXpath)).isEmpty()) {
 
-							System.out.println("XPath bulunamadı.");
-							label.setText(numOfSpan + " adet Randevu bulundu!!");
-							System.out.println(numOfSpan + "adet randevu bulundu!");
 
 							Thread emailThread = new Thread(() -> {
 								try {
@@ -429,7 +432,11 @@ public class Selenium {
 							if (autoGet == true) {
 								Selenium.getAppointment(countOfApp);
 							}
-
+							
+							System.out.println("XPath bulunamadı.");
+							label.setText(numOfSpan + " adet Randevu bulundu!!");
+							System.out.println(numOfSpan + "adet randevu bulundu!");
+							
 							Selenium.Sound();
 
 							running = false;
